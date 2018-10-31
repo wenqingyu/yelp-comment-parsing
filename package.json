@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "exceljs": "^1.6.2",
+    "node-xlsx": "^0.12.1",
     "nodegrass": "0.0.3",
     "regexper.js": "^1.0.7",
     "request": "^2.88.0"

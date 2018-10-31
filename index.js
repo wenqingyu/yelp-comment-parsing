@@ -1,4 +1,5 @@
 let webHandler = require('./utils/webHandler')
+let xlsxHandler = require('./utils/xlsxHandler')
 const Regex = require('regexper.js');
 
 let citys = [
@@ -54,11 +55,11 @@ async function work(city) {
       let commentPage = 0
       let isCommentRunning = true
       while(isCommentRunning){
+        //分页读取评论列表
         commentPage++
         console.log(`https://www.yelp.com${businessInfo.url}/review_feed/?start=0&sort_by=date_desc`)
         let businessInfoResult = await webHandler.Get(`https://www.yelp.com${businessInfo.url}/review_feed/?start=${(page-1)*20}&sort_by=date_desc`,null,null,true)
         console.log('得到商铺详情，开始匹配评论')
-        //评论列表
         let regex = new Regex(/dropdown_user-name[^>]+?>([^<]+)[\s\S]+?([\d\.]+)\s*star rating[\s\S]+?rating-qualifier\S+\s*([\d\/]+)[\s\S]+?<p[^>]+>([\s\S]+?<\/p>)/,'ig'); 
         let matches = regex.matches(businessInfoResult.review_list)
         let commentInfos = []
@@ -74,6 +75,17 @@ async function work(city) {
           }
           continue
         }
+        //写入excel
+        await xlsxHandler.insertRows([
+          [
+            '1',
+            '2'
+          ],
+          [
+            '3',
+            '4'
+          ]
+        ],'./excels/'+'Chicago.xlsx' , 'Chicago' , ["name"])
         console.log(commentInfos)
       }
     }
