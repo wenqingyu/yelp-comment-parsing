@@ -39,12 +39,12 @@ async function work(city) {
       let matches = regex.matches(result)
       for(let match of matches){
         let tTmp = {}
-        tTmp.url = match[1]
-        tTmp.Rest_Name = match[2]
-        tTmp.Rest_Rate = match[3]
+        tTmp.url = match.groups[1]
+        tTmp.Rest_Name = match.groups[2]
+        tTmp.Rest_Rate = match.groups[3]
         tTmp.Rest_Price = 0
-        tTmp.Rest_total_Reviews = match[4]
-        tTmp.Rest_location = match[5]
+        tTmp.Rest_total_Reviews = match.groups[4]
+        tTmp.Rest_location = match.groups[5]
         businessInfos.push(tTmp)
       }
     }
@@ -54,6 +54,7 @@ async function work(city) {
     for(let businessInfo of businessInfos){
       console.log(`https://www.yelp.com${businessInfo.url}`)
       let businessInfoResult = await webHandler.Get(`https://www.yelp.com${businessInfo.url}`,null,null,false)
+      console.log('得到商铺详情，开始匹配评论')
       //评论列表
       let regex = new Regex(/class="user-name"[\s\S]+?>([^<]+)[\s\S]+?<b>(\d+)[\s\S]+?<b>(\d+)<\/b>\s*reviews[\s\S]+?(\d+)<[\s\S]+?(\d+\.\d*)[\s\S]*?star rating[\s\S]+?<span class="rating-qualifier">\s*(\S+)[\s\S]+?<p\s*lang="en">([\s\S]+?)<\/p>[\s\S]+?Useful[\s\S+]?count">([^<]+)[\s\S]+?Funny[\s\S+]?count">([^<]+)[\s\S]+?Cool[\s\S+]?count">([^<]+)/,'i'); 
       let matches = regex.matches(businessInfoResult)
