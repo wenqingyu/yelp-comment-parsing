@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "nodegrass": "0.0.3",
+    "regexper.js": "^1.0.7",
     "request": "^2.88.0"
   }
 }
