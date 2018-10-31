@@ -49,20 +49,35 @@ async function work(city) {
       }
     }
 
-    console.log(businessInfos)
     console.log('根据商铺获取评论数据')
     for(let businessInfo of businessInfos){
-      console.log(`https://www.yelp.com${businessInfo.url}`)
-      let businessInfoResult = await webHandler.Get(`https://www.yelp.com${businessInfo.url}`,null,null,false)
-      console.log('得到商铺详情，开始匹配评论')
-      //评论列表
-      let regex = new Regex(/class="user-name"[\s\S]+?>([^<]+)[\s\S]+?<b>(\d+)[\s\S]+?<b>(\d+)<\/b>\s*reviews[\s\S]+?(\d+)<[\s\S]+?(\d+\.\d*)[\s\S]*?star rating[\s\S]+?<span class="rating-qualifier">\s*(\S+)[\s\S]+?<p\s*lang="en">([\s\S]+?)<\/p>[\s\S]+?Useful[\s\S+]?count">([^<]+)[\s\S]+?Funny[\s\S+]?count">([^<]+)[\s\S]+?Cool[\s\S+]?count">([^<]+)/,'i'); 
-      let matches = regex.matches(businessInfoResult)
-      console.log(matches[1])
-      console.log('写入excel')
+      let commentPage = 0
+      let isCommentRunning = true
+      while(isCommentRunning){
+        commentPage++
+        console.log(`https://www.yelp.com${businessInfo.url}/review_feed/?start=0&sort_by=date_desc`)
+        let businessInfoResult = await webHandler.Get(`https://www.yelp.com${businessInfo.url}/review_feed/?start=${(page-1)*20}&sort_by=date_desc`,null,null,true)
+        console.log('得到商铺详情，开始匹配评论')
+        //评论列表
+        let regex = new Regex(/dropdown_user-name[^>]+?>([^<]+)[\s\S]+?([\d\.]+)\s*star rating[\s\S]+?rating-qualifier\S+\s*([\d\/]+)[\s\S]+?<p[^>]+>([\s\S]+?<\/p>)/,'ig'); 
+        let matches = regex.matches(businessInfoResult.review_list)
+        let commentInfos = []
+        for(let match of matches){
+          let tTmp = {}
+          tTmp.Cus_Name = match.groups[1]
+          tTmp.Cus_Review_Rate = match.groups[2]
+          tTmp.Cus_Review_Date = match.groups[3]
+          tTmp.Review = match.groups[4]
+          commentInfos.push(tTmp)
+          if(new Date(tTmp.Cus_Review_Date)<new Date('1/1/2018')){
+            isCommentRunning = false
+          }
+          continue
+        }
+        console.log(commentInfos)
+      }
     }
   }
-
 }
 
 async function begin(city) {
