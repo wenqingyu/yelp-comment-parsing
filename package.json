@@ -1,0 +1,23 @@
+{
+  "name": "creeper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "config": "^2.0.1",
+    "exceljs": "^1.6.2",
+    "lowdb": "^1.0.0",
+    "md5": "^2.2.1",
+    "moment": "^2.22.2",
+    "node-xlsx": "^0.12.1",
+    "nodegrass": "0.0.3",
+    "regexper.js": "^1.0.7",
+    "request": "^2.88.0",
+    "sync-request": "^6.0.0"
+  }
+}
