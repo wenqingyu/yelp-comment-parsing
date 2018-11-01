@@ -2,10 +2,7 @@ const request = require('request')
 const requestSync = require('sync-request')
 const md5 = require('md5')
 const config = require('config')
-const low = require('lowdb');
-const FileSync = require('lowdb/adapters/FileSync');  // 有多种适配器可选择
-const adapter = new FileSync('db.json'); // 申明一个适配器
-const db = low(adapter);
+const db = require('./utils/db')
 const moment = require('moment')
 
 let webHandler = {

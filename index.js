@@ -1,15 +1,10 @@
 let webHandler = require('./utils/webHandler')
 let xlsxHandler = require('./utils/xlsxHandler')
 const Regex = require('regexper.js');
-const low = require('lowdb');
-const FileSync = require('lowdb/adapters/FileSync');  // 有多种适配器可选择
-const adapter = new FileSync('db.json'); // 申明一个适配器
-const db = low(adapter);
+const db = require('./utils/db')
 
 let businessPage = 0
 let commentPage = 0
-
-
 
 let citys = [
   "Chicago",
