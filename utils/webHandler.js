@@ -125,6 +125,16 @@ webHandler.Get =async  (url, query, cookie, isJson = true , proxy) => {
   return result
 }
 
+webHandler.RefreshProxy = async ()=>{
+  let ipGet = requestSync('GET',`http://www.xiongmaodaili.com/xiongmao-web/api/glip?secret=${config.get('proxy.secret')}&orderNo=${config.get('proxy.orderId')}&count=1&isTxt=0&proxyType=1`)
+  let ip = JSON.parse(ipGet.getBody().toString()) 
+  proxyHost = `http://${ip.obj[0].ip}:${ip.obj[0].port}`
+  await db.set('proxy',{
+    url : proxyHost,
+    time : Date.now()
+  }).write()
+}
+
 webHandler.Delete = (url, form, cookie) => {
   return new Promise((resolve, reject) => {
     request.delete({
