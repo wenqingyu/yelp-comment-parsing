@@ -18,7 +18,7 @@ async function work(city, proxy) {
   while(true){
     page++
     console.log(`获取第${page}页，城市:${city}`)
-    let businessResult = await webHandler.Get(`https://www.yelp.com/search/snippet?find_desc=&find_loc=Chicago&start=${(page-1)*10}`,null,null,true,proxy)
+    let businessResult = await webHandler.Get(`https://www.yelp.com/search/snippet?find_desc=&find_loc=${city}&start=${(page-1)*10}`,null,null,true,proxy)
 
     let businessInfos = []
     if(businessResult.searchPageProps){
@@ -98,7 +98,6 @@ async function work(city, proxy) {
         }catch(err){
           console.log(err)
         }
-        
       }
     }
   }
@@ -114,4 +113,4 @@ async function begin(isUsedproxy,city) {
 }
 
 //是否使用代理服务器
-begin(true,process.argv.splice(2)[0])
+begin(true,process.argv.splice(2)[0]||citys[1])
