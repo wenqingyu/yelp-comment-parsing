@@ -99,16 +99,14 @@ async function work(city, proxy) {
   }
 }
 
-async function begin(isUsedproxy) {
-  for(let city of citys){
-    let proxy = null
-    //是否使用代理服务器
-    if(isUsedproxy){
-      proxy = true
-    }
-    await work(city,proxy)
+async function begin(isUsedproxy,city) {
+  let proxy = null
+  //是否使用代理服务器
+  if(isUsedproxy){
+    proxy = true
   }
+  await work(city,proxy)
 }
 
 //是否使用代理服务器
-begin(false)
+begin(true,citys[0])

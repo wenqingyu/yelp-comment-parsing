@@ -107,7 +107,7 @@ webHandler.Get =async  (url, query, cookie, isJson = true , proxy) => {
   let proxyHost = proxy
   if(proxy){
     proxyHost = await db.get('proxy').value()
-    if(!proxyHost || (proxyHost && moment(proxyHost.time).diff(moment(Date.now()),'minute')<= -5)){
+    if(!proxyHost || (proxyHost && moment(proxyHost.time).diff(moment(Date.now()),'minute')<= -4)){
       let ipGet = requestSync('GET',`http://www.xiongmaodaili.com/xiongmao-web/api/glip?secret=${config.get('proxy.secret')}&orderNo=${config.get('proxy.orderId')}&count=1&isTxt=0&proxyType=1`)
       let ip = JSON.parse(ipGet.getBody().toString()) 
       proxyHost = `http://${ip.obj[0].ip}:${ip.obj[0].port}`
