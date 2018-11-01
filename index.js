@@ -59,7 +59,7 @@ async function work(city, proxy) {
     for(let businessInfo of businessInfos){
       while(true){
         //分页读取评论列表
-        let commentUrl = `https://www.yelp.com${businessInfo.url}/review_feed/?start=${(commentPage)*20}&sort_by=date_desc`
+        let commentUrl = `https://www.yelp.com${businessInfo.url}/review_feed?start=${(commentPage)*20}&sort_by=date_desc`
         console.log(commentUrl)
         let businessInfoResult = await webHandler.Get(commentUrl,null,null,true,proxy)
         console.log('得到商铺详情，开始匹配评论')
