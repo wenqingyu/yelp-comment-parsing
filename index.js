@@ -57,43 +57,48 @@ async function work(city, proxy) {
       while(isCommentRunning){
         //分页读取评论列表
         commentPage++
-        let commentUrl = `https://www.yelp.com${businessInfo.url}/review_feed/?start=${(commentPage-1)*20}&sort_by=date_desc`
-        console.log(commentUrl)
-        let businessInfoResult = await webHandler.Get(commentUrl,null,null,true,proxy)
-        console.log('得到商铺详情，开始匹配评论')
-        let regex = new Regex(/dropdown_user-name[^>]+?>([^<]+)[\s\S]+?([\d\.]+)\s*star rating[\s\S]+?rating-qualifier\S+\s*([\d\/]+)[\s\S]+?<p[^>]+>([\s\S]+?<\/p>)/,'ig'); 
-        let matches = regex.matches(businessInfoResult.review_list)
-        let commentInfos = []
-        for(let match of matches){
-          let tTmp = {}
-          tTmp.Cus_Name = match.groups[1]
-          tTmp.Cus_Review_Rate = match.groups[2]
-          tTmp.Cus_Review_Date = match.groups[3]
-          tTmp.Review = match.groups[4]
-          commentInfos.push(tTmp)
-          if(new Date(tTmp.Cus_Review_Date)<new Date('1/10/2017')){
-            isCommentRunning = false
+        try{
+          let commentUrl = `https://www.yelp.com${businessInfo.url}/review_feed/?start=${(commentPage-1)*20}&sort_by=date_desc`
+          console.log(commentUrl)
+          let businessInfoResult = await webHandler.Get(commentUrl,null,null,true,proxy)
+          console.log('得到商铺详情，开始匹配评论')
+          let regex = new Regex(/dropdown_user-name[^>]+?>([^<]+)[\s\S]+?([\d\.]+)\s*star rating[\s\S]+?rating-qualifier\S+\s*([\d\/]+)[\s\S]+?<p[^>]+>([\s\S]+?<\/p>)/,'ig'); 
+          let matches = regex.matches(businessInfoResult.review_list)
+          let commentInfos = []
+          for(let match of matches){
+            let tTmp = {}
+            tTmp.Cus_Name = match.groups[1]
+            tTmp.Cus_Review_Rate = match.groups[2]
+            tTmp.Cus_Review_Date = match.groups[3]
+            tTmp.Review = match.groups[4]
+            commentInfos.push(tTmp)
+            if(new Date(tTmp.Cus_Review_Date)<new Date('1/10/2017')){
+              isCommentRunning = false
+            }
+            continue
           }
-          continue
+
+          let rows = []
+
+          for(let comment of commentInfos){
+            rows.push([
+                city,
+                businessInfo.Rest_Name,
+                businessInfo.Rest_Rate,
+                businessInfo.Rest_location,
+                comment.Cus_Name,
+                comment.Cus_Review_Rate,
+                comment.Cus_Review_Date,
+                comment.Review
+              ])
+          }
+
+          //写入excel
+            await xlsxHandler.insertRows(rows,'./excels/'+`${city}.xlsx` , city , ["City",'Rest_Name','Rest_Rate','location','Cus_Name','Cus_Rate','Cus_Review_Date','Review'])
+        }catch(err){
+          console.log(err)
         }
-
-        let rows = []
-
-        for(let comment of commentInfos){
-          rows.push([
-              city,
-              businessInfo.Rest_Name,
-              businessInfo.Rest_Rate,
-              businessInfo.Rest_location,
-              comment.Cus_Name,
-              comment.Cus_Review_Rate,
-              comment.Cus_Review_Date,
-              comment.Review
-            ])
-        }
-
-        //写入excel
-          await xlsxHandler.insertRows(rows,'./excels/'+`${city}.xlsx` , city , ["City",'Rest_Name','Rest_Rate','location','Cus_Name','Cus_Rate','Cus_Review_Date','Review'])
+        
       }
     }
   }
@@ -109,4 +114,4 @@ async function begin(isUsedproxy,city) {
 }
 
 //是否使用代理服务器
-begin(true,citys[0])
+begin(true,process.argv.splice(2)[0])
