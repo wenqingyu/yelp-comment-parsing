@@ -1,9 +1,15 @@
 let webHandler = require('./utils/webHandler')
 let xlsxHandler = require('./utils/xlsxHandler')
 const Regex = require('regexper.js');
+const low = require('lowdb');
+const FileSync = require('lowdb/adapters/FileSync');  // 有多种适配器可选择
+const adapter = new FileSync('db.json'); // 申明一个适配器
+const db = low(adapter);
 
 let businessPage = 0
 let commentPage = 0
+
+
 
 let citys = [
   "Chicago",
@@ -14,6 +20,8 @@ let citys = [
 ]
 
 async function work(city, proxy) {
+  businessPage =  await db.get('pages.'+city).value().businessPage
+  commentPage = await db.get('pages.'+city).value().commentPage
   while(true){
     console.log(`获取第${businessPage+1}页，城市:${city}`)
     let businessResult = await webHandler.Get(`https://www.yelp.com/search/snippet?find_desc=&find_loc=${city}&start=${(businessPage)*10}`,null,null,true,proxy)
@@ -59,6 +67,10 @@ async function work(city, proxy) {
         let matches = regex.matches(businessInfoResult.review_list)
         if(matches.length<=0){
           commentPage = 0
+          await db.set('pages.'+city,{
+            businessPage:businessPage,
+            commentPage:0
+          }).write()
           return
         }
         let commentInfos = []
@@ -71,6 +83,10 @@ async function work(city, proxy) {
           commentInfos.push(tTmp)
           if(new Date(tTmp.Cus_Review_Date)<new Date('1/10/2017')){
             commentPage = 0
+            await db.set('pages.'+city,{
+              businessPage:businessPage,
+              commentPage:0
+            }).write()
             return
           }
         }
@@ -93,13 +109,28 @@ async function work(city, proxy) {
         //写入excel
         await xlsxHandler.insertRows(rows,'./excels/'+`${city}.xlsx` , city , ["City",'Rest_Name','Rest_Rate','location','Cus_Name','Cus_Rate','Cus_Review_Date','Review'])
         commentPage++
+        await db.set('pages.'+city,{
+          businessPage:businessPage,
+          commentPage:commentPage
+        }).write()
       }
     }
     businessPage++
+    await db.set('pages.'+city,{
+      businessPage:businessPage,
+      commentPage:commentPage
+    }).write()
   }
 }
 
 async function begin(isUsedproxy,city) {
+  let pageObj = await db.get('pages.'+city).value()
+  if(!pageObj){
+    await db.set('pages.'+city,{
+      businessPage:0,
+      commentPage:0
+    }).write()
+  }
   let proxy = null
   //是否使用代理服务器
   if(isUsedproxy){

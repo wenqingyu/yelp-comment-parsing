@@ -1,6 +1,12 @@
 {
   "proxy": {
-    "url": "http://58.55.146.213:22445",
-    "time": 1541066045310
+    "url": "http://36.22.79.69:35181",
+    "time": 1541066622858
+  },
+  "pages": {
+    "Las Vegas": {
+      "businessPage": 0,
+      "commentPage": 0
+    }
   }
 }
