@@ -1,4 +1,12 @@
 const request = require('request')
+const requestSync = require('sync-request')
+const md5 = require('md5')
+const config = require('config')
+const low = require('lowdb');
+const FileSync = require('lowdb/adapters/FileSync');  // 有多种适配器可选择
+const adapter = new FileSync('db.json'); // 申明一个适配器
+const db = low(adapter);
+const moment = require('moment')
 
 let webHandler = {
 
@@ -49,21 +57,31 @@ webHandler.Post = (url, form, headers, isJson = true, cookie, isRespone = false)
   })
 }
 
-webHandler.Get = (url, query, cookie, isJson = true , proxy) => {
-  return new Promise((resolve, reject) => {
+function getFunc(url, query, cookie, isJson = true , proxy){
+  return new Promise(async (resolve, reject) => {
     if (query) {
       url += `?query=${UrlEncode(query)}`
     }
+
+    let proxyOption = null
+
+    if(proxy){
+      proxyOption = proxy
+    }
+
     request.get({
       url,
-      proxy
+      proxy : proxyOption
     },
     function (error, response, body) {
       try {
         if (error) {
+          reject(error)
+          return
         }
         if (!response.statusCode) {
           reject(body)
+          return
         }
 
         if (!error) {
@@ -83,6 +101,25 @@ webHandler.Get = (url, query, cookie, isJson = true , proxy) => {
     }
     )
   })
+}
+
+webHandler.Get =async  (url, query, cookie, isJson = true , proxy) => {
+  let result = {}
+  let proxyHost = await db.get('proxy').value()
+  if(!proxyHost || (proxyHost && moment(proxyHost.time).diff(moment(Date.now()),'minute')<= -5)){
+    let ipGet = requestSync('GET',`http://www.xiongmaodaili.com/xiongmao-web/api/glip?secret=${config.get('proxy.secret')}&orderNo=${config.get('proxy.orderId')}&count=1&isTxt=0&proxyType=1`)
+    let ip = JSON.parse(ipGet.getBody().toString()) 
+    proxyHost = `http://${ip.obj[0].ip}:${ip.obj[0].port}`
+    await db.set('proxy',{
+      url : proxyHost,
+      time : Date.now()
+    }).write()
+  }else{
+    proxyHost = proxyHost.url
+  }
+  
+  result = await getFunc(url, query, cookie, isJson = true , proxy?proxyHost:proxy)
+  return result
 }
 
 webHandler.Delete = (url, form, cookie) => {

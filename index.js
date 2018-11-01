@@ -12,13 +12,13 @@ let citys = [
 
 let count=0
 
-async function work(city) {
+async function work(city, proxy) {
   let page = 0
 
   while(true){
     page++
     console.log(`获取第${page}页，城市:${city}`)
-    let businessResult = await webHandler.Get(`https://www.yelp.com/search/snippet?find_desc=&find_loc=Chicago&start=${(page-1)*10}`,null,null,true)
+    let businessResult = await webHandler.Get(`https://www.yelp.com/search/snippet?find_desc=&find_loc=Chicago&start=${(page-1)*10}`,null,null,true,proxy)
 
     let businessInfos = []
     if(businessResult.searchPageProps){
@@ -59,7 +59,7 @@ async function work(city) {
         commentPage++
         let commentUrl = `https://www.yelp.com${businessInfo.url}/review_feed/?start=${(commentPage-1)*20}&sort_by=date_desc`
         console.log(commentUrl)
-        let businessInfoResult = await webHandler.Get(commentUrl,null,null,true)
+        let businessInfoResult = await webHandler.Get(commentUrl,null,null,true,proxy)
         console.log('得到商铺详情，开始匹配评论')
         let regex = new Regex(/dropdown_user-name[^>]+?>([^<]+)[\s\S]+?([\d\.]+)\s*star rating[\s\S]+?rating-qualifier\S+\s*([\d\/]+)[\s\S]+?<p[^>]+>([\s\S]+?<\/p>)/,'ig'); 
         let matches = regex.matches(businessInfoResult.review_list)
@@ -99,11 +99,16 @@ async function work(city) {
   }
 }
 
-async function begin(city) {
-  while(true){
-    await work(citys[0])
+async function begin(isUsedproxy) {
+  for(let city of citys){
+    let proxy = null
+    //是否使用代理服务器
+    if(isUsedproxy){
+      proxy = true
+    }
+    await work(city,proxy)
   }
 }
 
 
-begin()
+begin(false)
