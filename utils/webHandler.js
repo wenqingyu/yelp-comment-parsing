@@ -2,7 +2,7 @@ const request = require('request')
 const requestSync = require('sync-request')
 const md5 = require('md5')
 const config = require('config')
-const db = require('./utils/db')
+const db = require('./db')
 const moment = require('moment')
 
 let webHandler = {
