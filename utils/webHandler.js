@@ -49,13 +49,14 @@ webHandler.Post = (url, form, headers, isJson = true, cookie, isRespone = false)
   })
 }
 
-webHandler.Get = (url, query, cookie, isJson = true) => {
+webHandler.Get = (url, query, cookie, isJson = true , proxy) => {
   return new Promise((resolve, reject) => {
     if (query) {
       url += `?query=${UrlEncode(query)}`
     }
     request.get({
-      url
+      url,
+      proxy
     },
     function (error, response, body) {
       try {

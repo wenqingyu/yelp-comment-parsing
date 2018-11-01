@@ -77,10 +77,10 @@ async function work(city) {
           continue
         }
 
+        let rows = []
+
         for(let comment of commentInfos){
-          //写入excel
-          await xlsxHandler.insertRows([
-            [
+          rows.push([
               city,
               businessInfo.Rest_Name,
               businessInfo.Rest_Rate,
@@ -89,9 +89,11 @@ async function work(city) {
               comment.Cus_Review_Rate,
               comment.Cus_Review_Date,
               comment.Review
-            ]
-          ],'./excels/'+`${city}.xlsx` , city , ["City",'Rest_Name','Rest_Rate','location','Cus_Name','Cus_Rate','Cus_Review_Date','Review'])
+            ])
         }
+
+        //写入excel
+          await xlsxHandler.insertRows(rows,'./excels/'+`${city}.xlsx` , city , ["City",'Rest_Name','Rest_Rate','location','Cus_Name','Cus_Rate','Cus_Review_Date','Review'])
       }
     }
   }
