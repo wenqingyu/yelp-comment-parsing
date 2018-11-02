@@ -89,7 +89,7 @@ var businessCraw = new Crawler({
             for(let business of bs){
               for(let i=0;i<=130;i++){
                 commentCraw.queue({
-                  uri: `https://www.yelp.com${business.url}/review_feed?start=${50000}&sort_by=date_desc`
+                  uri: `https://www.yelp.com${business.url}/review_feed?start=${i*20}&sort_by=date_desc`
                 });
               }
             }
