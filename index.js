@@ -66,7 +66,7 @@ async function work(city, proxy) {
             businessPage:businessPage,
             commentPage:0
           }).write()
-          return
+          break
         }
         let commentInfos = []
         for(let match of matches){
@@ -82,7 +82,7 @@ async function work(city, proxy) {
               businessPage:businessPage,
               commentPage:0
             }).write()
-            return
+            break
           }
         }
 
