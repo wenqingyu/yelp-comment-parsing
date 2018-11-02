@@ -76,7 +76,7 @@ async function work(city, proxy) {
           tTmp.Cus_Review_Date = match.groups[3]
           tTmp.Review = match.groups[4]
           commentInfos.push(tTmp)
-          if(new Date(tTmp.Cus_Review_Date)<new Date('1/10/2017')){
+          if(new Date(tTmp.Cus_Review_Date)<new Date('10/1/2017')){
             commentPage = 0
             await db.set('pages.'+city,{
               businessPage:businessPage,
@@ -109,8 +109,9 @@ async function work(city, proxy) {
           commentPage:commentPage
         }).write()
       }
+      businessPage++
     }
-    businessPage++
+    
     await db.set('pages.'+city,{
       businessPage:businessPage,
       commentPage:commentPage
