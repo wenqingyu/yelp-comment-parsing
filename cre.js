@@ -11,7 +11,7 @@ let businessInfos = []
 let requestCount = 0
 let isRefresh = false
 let isWriting =false
-let city = 'Chicago'
+let city = ''
 let comments = []
 
 let citys = [
@@ -179,8 +179,8 @@ async function begin(city){
 }
 
 
-
+city = process.argv.splice(2)[0]||citys[0]
 //是否使用代理服务器
-begin(process.argv.splice(2)[0]||citys[0])
+begin()
 
 
