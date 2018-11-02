@@ -25,7 +25,7 @@ let citys = [
 let preRequest = async function(options, done) {
   try{
     options.proxy = db.get('proxy.url').value()
-    if(requestCount>=100||isRefresh){
+    if(requestCount>=500||isRefresh){
       await webHandler.RefreshProxy()
       requestCount=0
       isRefresh=false
@@ -40,10 +40,10 @@ let preRequest = async function(options, done) {
 var businessCraw = new Crawler({
     maxConnections: 100,
     preRequest: async function(options, done) {
+      requestCount++
       preRequest(options,done)
     },
     callback :async function (error, res, done) {
-        requestCount++
         if(error){
             console.log(error);
         }else{
