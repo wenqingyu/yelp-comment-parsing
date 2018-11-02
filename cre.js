@@ -101,6 +101,7 @@ var businessCraw = new Crawler({
 var commentCraw = new Crawler({
     maxConnections: 100,
     preRequest: async function(options, done) {
+      requestCount++
       preRequest(options,done)
     },
     callback :async function (error, res, done) {
