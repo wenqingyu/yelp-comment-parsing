@@ -110,12 +110,12 @@ async function work(city, proxy) {
         }).write()
       }
       businessPage++
+      await db.set('pages.'+city,{
+        businessPage:businessPage,
+        commentPage:commentPage
+      }).write()
     }
     
-    await db.set('pages.'+city,{
-      businessPage:businessPage,
-      commentPage:commentPage
-    }).write()
   }
 }
 
