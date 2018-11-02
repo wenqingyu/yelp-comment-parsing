@@ -65,7 +65,7 @@ async function work(city, proxy) {
         }
         let commentInfos = []
         for(let match of matches){
-          if(new Date(tTmp.Cus_Review_Date)<new Date('10/1/2017')){
+          if(new Date(match.groups[3])<new Date('10/1/2017')){
             break
           }
           let tTmp = {}
@@ -139,4 +139,4 @@ async function begin(isUsedproxy,city) {
 
 
 //是否使用代理服务器
-begin(true,process.argv.splice(2)[0]||citys[0])
+begin(false,process.argv.splice(2)[0]||citys[0])

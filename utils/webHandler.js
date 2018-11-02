@@ -68,7 +68,7 @@ function getFunc(url, query, cookie, isJson = true , proxy){
 
     let t = setTimeout(() => {
       reject('timeout')
-    }, 20000);
+    }, 10000);
 
     request.get({
       url,

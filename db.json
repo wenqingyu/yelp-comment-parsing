@@ -2,15 +2,11 @@
   "pages": {
     "Chicago": {
       "businessPage": 0,
-      "commentPage": 29
-    },
-    "Las Vegas": {
-      "businessPage": 0,
-      "commentPage": 2
+      "commentPage": 0
     }
   },
   "proxy": {
-    "url": "http://121.237.139.219:42966",
-    "time": 1541087040375
+    "url": "http://111.181.60.16:29941",
+    "time": 1541134365740
   }
 }
