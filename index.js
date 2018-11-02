@@ -65,22 +65,21 @@ async function work(city, proxy) {
         }
         let commentInfos = []
         for(let match of matches){
+          if(new Date(tTmp.Cus_Review_Date)<new Date('10/1/2017')){
+            break
+          }
           let tTmp = {}
           tTmp.Cus_Name = match.groups[1]
           tTmp.Cus_Review_Rate = match.groups[2]
           tTmp.Cus_Review_Date = match.groups[3]
           tTmp.Review = match.groups[4]
           commentInfos.push(tTmp)
-          if(new Date(tTmp.Cus_Review_Date)<new Date('10/1/2017')){
-            commentPage = 0
-            businessPage++
-            await db.set('pages.'+city,{
-              businessPage:businessPage,
-              commentPage:0
-            }).write()
-            break
-          }
         }
+
+        if(commentInfos.length<=0){
+          break
+        }
+        
 
         let rows = []
 
