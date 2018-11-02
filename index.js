@@ -37,7 +37,7 @@ async function work(city, proxy) {
     }else{
       let result = businessResult.search_results
       let regex = new Regex(/href="([^"]+)"><span\s*>([^<]+)[\s\S]*?(\d*\.\d*)\s*star[\s\S]+?(\d+)\s*reviews[\s\S]+?address>\S*\s*([^<\n]+)\S*\s*/,'ig'); 
-      let matches = regex.matches(result)
+      let matches = regex.matches(unescape(result))
       for(let match of matches){
         let tTmp = {}
         tTmp.url = match.groups[1]
@@ -59,7 +59,7 @@ async function work(city, proxy) {
         let businessInfoResult = await webHandler.Get(commentUrl,null,null,true,proxy)
         console.log('得到商铺详情，开始匹配评论')
         let regex = new Regex(/dropdown_user-name[^>]+?>([^<]+)[\s\S]+?([\d\.]+)\s*star rating[\s\S]+?rating-qualifier\S+\s*([\d\/]+)[\s\S]+?<p[^>]+>([\s\S]+?<\/p>)/,'ig'); 
-        let matches = regex.matches(businessInfoResult.review_list)
+        let matches = regex.matches(unescape(businessInfoResult.review_list))
         if(matches.length<=0){
           commentPage = 0
           await db.set('pages.'+city,{
@@ -143,4 +143,4 @@ async function begin(isUsedproxy,city) {
 
 
 //是否使用代理服务器
-begin(true,process.argv.splice(2)[0]||citys[1])
+begin(true,process.argv.splice(2)[0]||citys[0])

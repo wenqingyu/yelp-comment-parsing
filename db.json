@@ -1,8 +1,12 @@
 {
   "pages": {
+    "Chicago": {
+      "businessPage": 0,
+      "commentPage": 29
+    },
     "Las Vegas": {
       "businessPage": 0,
-      "commentPage": 12
+      "commentPage": 2
     }
   },
   "proxy": {
