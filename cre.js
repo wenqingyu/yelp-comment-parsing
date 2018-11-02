@@ -38,7 +38,7 @@ let preRequest = async function(options, done) {
 }
 
 var businessCraw = new Crawler({
-    maxConnections: 100,
+    maxConnections: 5,
     preRequest: async function(options, done) {
       requestCount++
       preRequest(options,done)
@@ -99,7 +99,7 @@ var businessCraw = new Crawler({
 });
 
 var commentCraw = new Crawler({
-    maxConnections: 100,
+    maxConnections: 5,
     preRequest: async function(options, done) {
       requestCount++
       preRequest(options,done)
@@ -156,8 +156,8 @@ setInterval(async () => {
   if(!isWriting){
     isWriting = true
     let cs = []
-    for(let i=0;i<10;i++){
-      cs.push(comments.shift(10))
+    for(let i=0;i<20;i++){
+      cs.push(comments.shift(20))
     }
     if(cs[0]){
       //写入excel
