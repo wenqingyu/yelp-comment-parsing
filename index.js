@@ -135,6 +135,7 @@ async function begin(isUsedproxy,city) {
   try{
     await work(city,proxy)
   }catch(err){
+    console.log(err)
     console.log('错误自修复，重启成功')
     webHandler.RefreshProxy()
     begin(isUsedproxy,city)
