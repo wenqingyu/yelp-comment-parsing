@@ -2,7 +2,7 @@
   "pages": {
     "Chicago": {
       "businessPage": 0,
-      "commentPage": 0
+      "commentPage": 20
     }
   },
   "proxy": {

@@ -139,4 +139,4 @@ async function begin(isUsedproxy,city) {
 
 
 //是否使用代理服务器
-begin(false,process.argv.splice(2)[0]||citys[0])
+begin(true,process.argv.splice(2)[0]||citys[0])
