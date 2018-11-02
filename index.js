@@ -61,11 +61,6 @@ async function work(city, proxy) {
         let regex = new Regex(/dropdown_user-name[^>]+?>([^<]+)[\s\S]+?([\d\.]+)\s*star rating[\s\S]+?rating-qualifier\S+\s*([\d\/]+)[\s\S]+?<p[^>]+>([\s\S]+?<\/p>)/,'ig'); 
         let matches = regex.matches(unescape(businessInfoResult.review_list))
         if(matches.length<=0){
-          commentPage = 0
-          await db.set('pages.'+city,{
-            businessPage:businessPage,
-            commentPage:0
-          }).write()
           break
         }
         let commentInfos = []
@@ -78,6 +73,7 @@ async function work(city, proxy) {
           commentInfos.push(tTmp)
           if(new Date(tTmp.Cus_Review_Date)<new Date('10/1/2017')){
             commentPage = 0
+            businessPage++
             await db.set('pages.'+city,{
               businessPage:businessPage,
               commentPage:0
@@ -112,7 +108,7 @@ async function work(city, proxy) {
       businessPage++
       await db.set('pages.'+city,{
         businessPage:businessPage,
-        commentPage:commentPage
+        commentPage:0
       }).write()
     }
     
