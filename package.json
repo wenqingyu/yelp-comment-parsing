@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "config": "^2.0.1",
+    "crawler": "^1.2.0",
     "exceljs": "^1.6.2",
     "lowdb": "^1.0.0",
     "md5": "^2.2.1",

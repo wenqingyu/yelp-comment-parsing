@@ -1,12 +1,6 @@
 {
-  "pages": {
-    "Chicago": {
-      "businessPage": 0,
-      "commentPage": 2
-    }
-  },
   "proxy": {
-    "url": "http://114.226.244.45:41865",
-    "time": 1541136626357
+    "url": "http://116.209.126.111:22406",
+    "time": 1541150892704
   }
 }
