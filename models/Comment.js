@@ -24,9 +24,6 @@ const Comment = sequelize.define('comment', {
   }
 }, {
   freezeTableName: true,
-  timestamps: true,
-  createdAt: 'createby',
-  updatedAt: 'updateby'
 })
 
 module.exports = Comment

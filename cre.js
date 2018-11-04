@@ -77,6 +77,7 @@ var businessCraw = new Crawler({
                   bs.push(tTmp)
                 }
               }
+              let businessQues = []
               for(let business of bs){
                 let obj = {
                   url : business.url,
@@ -86,18 +87,23 @@ var businessCraw = new Crawler({
                   Rest_location : business.Rest_location,
                   city,
                 }
-                await mysql.Business.findOrCreate({
-                  where:{
-                    url : business.url,
-                    city,
-                  },
-                  defaults:obj
-                })
+
+                businessQues.push(`('${business.url}','${business.Rest_Name}','${business.Rest_Rate}','${business.Rest_total_Reviews}','${business.Rest_location}','${city}')`)
+
                 // console.log('进入：'+ `https://www.yelp.com${business.url}/review_feed?start=0&sort_by=date_desc`)
                 // commentCraw.queue({
                 //   uri: `https://www.yelp.com${business.url}/review_feed?start=0&sort_by=date_desc`
                 // });
               }
+
+              global.sequelize.query(`
+                REPLACE INTO 
+
+                business(url,Rest_Name,Rest_Rate,Rest_total_Reviews,Rest_location,city) 
+                
+                VALUES
+                ${businessQues.join(',')}
+              `)
             }catch(err){
               console.log('错误business:' + res.body)
               console.log(err)

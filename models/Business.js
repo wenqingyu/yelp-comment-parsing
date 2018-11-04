@@ -8,7 +8,8 @@ const Business = sequelize.define('business', {
     autoIncrement: true
   },
   url: {
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
+    unique:"uk_t_url"
   },
   Rest_Name: {
     type: Sequelize.STRING
@@ -26,10 +27,7 @@ const Business = sequelize.define('business', {
     type: Sequelize.STRING
   }
 }, {
-  freezeTableName: true,
-  timestamps: true,
-  createdAt: 'createby',
-  updatedAt: 'updateby'
+  freezeTableName: true
 })
 
 module.exports = Business
