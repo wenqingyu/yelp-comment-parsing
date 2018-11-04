@@ -18,14 +18,13 @@ let citys = [
   "New York",
   "Orlando"
 ]
-let city = process.argv.splice(2)[0]||citys[0]
 
 let preRequest = async function(options, done) {
   try{
     requestCount++
     console.log(requestCount)
     options.proxy = db.get('proxy.url').value()
-    if(requestCount>=50||isRefresh){
+    if(requestCount>=10000||isRefresh){
       requestCount=0
       isRefresh=false
       await webHandler.RefreshProxy()
@@ -86,7 +85,7 @@ var businessCraw = new Crawler({
                   Rest_Rate : business.Rest_Rate,
                   Rest_total_Reviews : business.Rest_total_Reviews,
                   Rest_location : business.Rest_location,
-                  city,
+                  city : /find_loc=([^&]+)/.exec(res.options.uri)[1],
                 }
 
                 businessQues.push(`('${business.url}','${business.Rest_Name}','${business.Rest_Rate}','${business.Rest_total_Reviews}','${business.Rest_location}','${city}')`)
@@ -167,10 +166,12 @@ async function begin(){
   await webHandler.RefreshProxy()
   requestCount = 0
   proxy = db.get('proxy.url').value()
-  for(let i=0;i<=100;i++){
-    businessCraw.queue({
-      uri: `https://www.yelp.com/search/snippet?find_desc=&find_loc=${city}&start=${i*10}`
-    });
+  for(let city of citys){
+    for(let i=0;i<=100;i++){
+      businessCraw.queue({
+        uri: `https://www.yelp.com/search/snippet?find_desc=&find_loc=${city}&start=${i*10}`
+      });
+    }
   }
 }
 
