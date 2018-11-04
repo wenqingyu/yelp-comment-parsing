@@ -89,7 +89,6 @@ var businessCraw = new Crawler({
                 await mysql.Business.findOrCreate({
                   where:{
                     url : business.url,
-                    Rest_Name : business.Rest_Name,
                     city,
                   },
                   defaults:obj
