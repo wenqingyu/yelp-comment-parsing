@@ -83,7 +83,7 @@ var businessCraw = new Crawler({
                     },
                     defaults:{
                       url : business.url,
-                      Rest_Name : business.url,
+                      Rest_Name : business.Rest_Name,
                       Rest_Rate : business.Rest_Rate,
                       Rest_total_Reviews : business.Rest_total_Reviews,
                       Rest_location : business.Rest_location,
@@ -127,7 +127,7 @@ var commentCraw = new Crawler({
                   Cus_Review_Rate : match.groups[2],
                   Cus_Review_Date : new Date(match.groups[3]),
                   Review : match.groups[4],
-                  url : /(\/biz\/[^/]+)\/review_feed/.exec(res.options.uri)[1]
+                  url : /www.yelp.com([\s\S]+?)\/review_feed/.exec(res.options.uri)[1]
                 }
                 await mysql.Comment.findOrCreate({
                   where: obj,
