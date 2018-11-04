@@ -37,7 +37,7 @@ let preRequest = async function(options, done) {
 }
 
 var businessCraw = new Crawler({
-    maxConnections: 100,
+    maxConnections: 1,
     preRequest: async function(options, done) {
       preRequest(options,done)
     },
@@ -88,7 +88,7 @@ var businessCraw = new Crawler({
                   city : /find_loc=([^&]+)/.exec(res.options.uri)[1],
                 }
 
-                businessQues.push(`('${business.url}','${business.Rest_Name}','${business.Rest_Rate}','${business.Rest_total_Reviews}','${business.Rest_location}','${city}')`)
+                businessQues.push(`('${business.url}','${business.Rest_Name}','${business.Rest_Rate}','${business.Rest_total_Reviews}','${business.Rest_location}','${obj.city}')`)
 
                 console.log('comment入口：'+ `https://www.yelp.com${business.url}/review_feed?start=0&sort_by=date_desc`)
                 commentCraw.queue({
@@ -105,7 +105,6 @@ var businessCraw = new Crawler({
                 ${businessQues.join(',')}
               `)
             }catch(err){
-              console.log('错误business:' + res.body)
               console.log(err)
             }
         }
@@ -114,7 +113,7 @@ var businessCraw = new Crawler({
 });
 
 var commentCraw = new Crawler({
-    maxConnections: 100,
+    maxConnections: 1,
     preRequest: async function(options, done) {
       preRequest(options,done)
     },
