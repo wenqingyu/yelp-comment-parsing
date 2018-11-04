@@ -90,11 +90,9 @@ var businessCraw = new Crawler({
                       city,
                     }
                   })
-                for(let i=0;i<=130;i++){
-                  commentCraw.queue({
-                    uri: `https://www.yelp.com${business.url}/review_feed?start=${i*20}&sort_by=date_desc`
-                  });
-                }
+                commentCraw.queue({
+                  uri: `https://www.yelp.com${business.url}/review_feed?start=0&sort_by=date_desc`
+                });
               }
             }catch(err){
               console.log(err)
@@ -139,6 +137,13 @@ var commentCraw = new Crawler({
             }
           }catch(err){
             console.log(err)
+          }
+          let page =parseInt(/start=(\d*)/.exec(res.options.uri)[1]) / 20
+          if(page<130){
+            let url  = res.options.uri.replace('/start=\d*/','start='+((page+1)*20))
+            commentCraw.queue({
+              uri
+            });
           }
         }
         done()
