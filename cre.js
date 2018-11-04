@@ -130,7 +130,7 @@ var commentCraw = new Crawler({
               let url  = res.options.uri.replace(/start=\d*/,'start='+((page+1)*20))
               console.log('comment自进入：'+ url)
               commentCraw.queue({
-                url
+                uri : url
               });
             }
             JSON.parse(res.body)
