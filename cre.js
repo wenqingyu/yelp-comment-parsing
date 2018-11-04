@@ -23,7 +23,7 @@ let citys = [
 let preRequest = async function(options, done) {
   try{
     options.proxy = db.get('proxy.url').value()
-    if(requestCount>=100||isRefresh){
+    if(requestCount>=50||isRefresh){
       await webHandler.RefreshProxy()
       requestCount=0
       isRefresh=false
@@ -90,9 +90,9 @@ var businessCraw = new Crawler({
                   defaults:obj
                 })
                 console.log('进入：'+ `https://www.yelp.com${business.url}/review_feed?start=0&sort_by=date_desc`)
-                commentCraw.queue({
-                  uri: `https://www.yelp.com${business.url}/review_feed?start=0&sort_by=date_desc`
-                });
+                // commentCraw.queue({
+                //   uri: `https://www.yelp.com${business.url}/review_feed?start=0&sort_by=date_desc`
+                // });
               }
             }catch(err){
               console.log(err)
