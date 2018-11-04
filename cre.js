@@ -91,10 +91,10 @@ var businessCraw = new Crawler({
 
                 businessQues.push(`('${business.url}','${business.Rest_Name}','${business.Rest_Rate}','${business.Rest_total_Reviews}','${business.Rest_location}','${city}')`)
 
-                // console.log('进入：'+ `https://www.yelp.com${business.url}/review_feed?start=0&sort_by=date_desc`)
-                // commentCraw.queue({
-                //   uri: `https://www.yelp.com${business.url}/review_feed?start=0&sort_by=date_desc`
-                // });
+                console.log('进入：'+ `https://www.yelp.com${business.url}/review_feed?start=0&sort_by=date_desc`)
+                commentCraw.queue({
+                  uri: `https://www.yelp.com${business.url}/review_feed?start=0&sort_by=date_desc`
+                });
               }
 
               global.sequelize.query(`
