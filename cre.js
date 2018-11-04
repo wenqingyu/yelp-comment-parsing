@@ -22,13 +22,13 @@ let city = process.argv.splice(2)[0]||citys[0]
 
 let preRequest = async function(options, done) {
   try{
-    requestCount++
-    options.proxy = db.get('proxy.url').value()
-    if(requestCount>=30||isRefresh){
-      await webHandler.RefreshProxy()
-      requestCount=0
-      isRefresh=false
-    }
+    // requestCount++
+    // options.proxy = db.get('proxy.url').value()
+    // if(requestCount>=30||isRefresh){
+    //   await webHandler.RefreshProxy()
+    //   requestCount=0
+    //   isRefresh=false
+    // }
   }catch(err){
     console.log(err)
   }
@@ -38,6 +38,7 @@ let preRequest = async function(options, done) {
 
 var businessCraw = new Crawler({
     maxConnections: 50,
+    rateLimit: 1000,
     preRequest: async function(options, done) {
       preRequest(options,done)
     },
@@ -115,6 +116,7 @@ var businessCraw = new Crawler({
 
 var commentCraw = new Crawler({
     maxConnections: 50,
+    rateLimit: 1000,
     preRequest: async function(options, done) {
       preRequest(options,done)
     },
