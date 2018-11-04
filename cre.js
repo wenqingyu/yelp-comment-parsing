@@ -23,6 +23,7 @@ let city = process.argv.splice(2)[0]||citys[0]
 let preRequest = async function(options, done) {
   try{
     requestCount++
+    console.log(requestCount)
     options.proxy = db.get('proxy.url').value()
     if(requestCount>=30||isRefresh){
       await webHandler.RefreshProxy()
@@ -38,7 +39,7 @@ let preRequest = async function(options, done) {
 
 var businessCraw = new Crawler({
     maxConnections: 10,
-    rateLimit: 100,
+    rateLimit: 10,
     preRequest: async function(options, done) {
       preRequest(options,done)
     },
@@ -116,7 +117,7 @@ var businessCraw = new Crawler({
 
 var commentCraw = new Crawler({
     maxConnections: 10,
-    rateLimit: 100,
+    rateLimit: 10,
     preRequest: async function(options, done) {
       preRequest(options,done)
     },
