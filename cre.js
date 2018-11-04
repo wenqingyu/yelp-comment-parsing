@@ -142,7 +142,7 @@ var commentCraw = new Crawler({
           if(page<130){
             let url  = res.options.uri.replace(/start=\d*/,'start='+((page+1)*20))
             commentCraw.queue({
-              uri
+              url
             });
           }
         }
