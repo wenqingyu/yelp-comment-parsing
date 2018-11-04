@@ -142,6 +142,7 @@ var commentCraw = new Crawler({
               }
             }
           }catch(err){
+            console.log('报错：'+ res.options.uri)
             console.log(err)
           }
         }
