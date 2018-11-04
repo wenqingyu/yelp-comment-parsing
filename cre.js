@@ -114,6 +114,13 @@ var commentCraw = new Crawler({
           console.log(error)
         }else{
           try{
+            let page =parseInt(/start=(\d*)/.exec(res.options.uri)[1]) / 20
+            if(page<130){
+              let url  = res.options.uri.replace(/start=\d*/,'start='+((page+1)*20))
+              commentCraw.queue({
+                url
+              });
+            }
             JSON.parse(res.body)
             let businessInfoResult = JSON.parse(res.body)
             console.log('得到商铺详情，开始匹配评论')
@@ -137,13 +144,6 @@ var commentCraw = new Crawler({
             }
           }catch(err){
             console.log(err)
-          }
-          let page =parseInt(/start=(\d*)/.exec(res.options.uri)[1]) / 20
-          if(page<130){
-            let url  = res.options.uri.replace(/start=\d*/,'start='+((page+1)*20))
-            commentCraw.queue({
-              url
-            });
           }
         }
         done()
