@@ -36,7 +36,7 @@ let preRequest = async function(options, done) {
 }
 
 var businessCraw = new Crawler({
-    maxConnections: 1,
+    maxConnections: 10,
     preRequest: async function(options, done) {
       requestCount++
       preRequest(options,done)
@@ -105,7 +105,7 @@ var businessCraw = new Crawler({
 });
 
 var commentCraw = new Crawler({
-    maxConnections: 1,
+    maxConnections: 10,
     preRequest: async function(options, done) {
       requestCount++
       preRequest(options,done)
