@@ -127,10 +127,10 @@ var commentCraw = new Crawler({
           console.log(error)
         }else{
           try{
-            console.log('comment自进入：'+ res.options.uri)
             let page =parseInt(/start=(\d*)/.exec(res.options.uri)[1]) / 20
             if(page<130){
               let url  = res.options.uri.replace(/start=\d*/,'start='+((page+1)*20))
+              console.log('comment自进入：'+ url)
               commentCraw.queue({
                 url
               });
