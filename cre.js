@@ -95,6 +95,7 @@ var businessCraw = new Crawler({
                 // });
               }
             }catch(err){
+              console.log('错误business:' + res.body)
               console.log(err)
             }
         }
