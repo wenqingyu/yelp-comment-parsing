@@ -10,7 +10,6 @@ let proxy = ''
 
 let requestCount = 0
 let isRefresh = false
-let city = ''
 
 let citys = [
   "Chicago",
@@ -19,11 +18,13 @@ let citys = [
   "New York",
   "Orlando"
 ]
+let city = process.argv.splice(2)[0]||citys[0]
 
 let preRequest = async function(options, done) {
   try{
+    requestCount++
     options.proxy = db.get('proxy.url').value()
-    if(requestCount>=50||isRefresh){
+    if(requestCount>=100||isRefresh){
       await webHandler.RefreshProxy()
       requestCount=0
       isRefresh=false
@@ -36,9 +37,8 @@ let preRequest = async function(options, done) {
 }
 
 var businessCraw = new Crawler({
-    maxConnections: 10,
+    maxConnections: 100,
     preRequest: async function(options, done) {
-      requestCount++
       preRequest(options,done)
     },
     callback :async function (error, res, done) {
@@ -46,6 +46,7 @@ var businessCraw = new Crawler({
             console.log(error);
         }else{
             try{
+              console.log('进入：'+ res.options.uri)
               JSON.parse(res.body)
               let businessResult = JSON.parse(res.body)
               let bs = []
@@ -86,10 +87,14 @@ var businessCraw = new Crawler({
                   city,
                 }
                 await mysql.Business.findOrCreate({
-                  where:obj,
+                  where:{
+                    url : business.url,
+                    Rest_Name : business.Rest_Name,
+                    city,
+                  },
                   defaults:obj
                 })
-                console.log('进入：'+ `https://www.yelp.com${business.url}/review_feed?start=0&sort_by=date_desc`)
+                // console.log('进入：'+ `https://www.yelp.com${business.url}/review_feed?start=0&sort_by=date_desc`)
                 // commentCraw.queue({
                 //   uri: `https://www.yelp.com${business.url}/review_feed?start=0&sort_by=date_desc`
                 // });
@@ -104,9 +109,8 @@ var businessCraw = new Crawler({
 });
 
 var commentCraw = new Crawler({
-    maxConnections: 10,
+    maxConnections: 100,
     preRequest: async function(options, done) {
-      requestCount++
       preRequest(options,done)
     },
     callback :async function (error, res, done) {
@@ -153,11 +157,11 @@ var commentCraw = new Crawler({
     }
 });
 
-async function begin(city){
+async function begin(){
   await webHandler.RefreshProxy()
   requestCount = 0
   proxy = db.get('proxy.url').value()
-  for(let i=0;i<100;i++){
+  for(let i=0;i<=100;i++){
     businessCraw.queue({
       uri: `https://www.yelp.com/search/snippet?find_desc=&find_loc=${city}&start=${i*10}`
     });
@@ -165,7 +169,7 @@ async function begin(city){
 }
 
 
-city = process.argv.splice(2)[0]||citys[0]
+
 //是否使用代理服务器
 begin()
 
