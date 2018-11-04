@@ -77,19 +77,18 @@ var businessCraw = new Crawler({
                 }
               }
               for(let business of bs){
+                let obj = {
+                  url : business.url,
+                  Rest_Name : business.Rest_Name,
+                  Rest_Rate : business.Rest_Rate,
+                  Rest_total_Reviews : business.Rest_total_Reviews,
+                  Rest_location : business.Rest_location,
+                  city,
+                }
                 await mysql.Business.findOrCreate({
-                    where:{
-                      url : business.url
-                    },
-                    defaults:{
-                      url : business.url,
-                      Rest_Name : business.Rest_Name,
-                      Rest_Rate : business.Rest_Rate,
-                      Rest_total_Reviews : business.Rest_total_Reviews,
-                      Rest_location : business.Rest_location,
-                      city,
-                    }
-                  })
+                  where:obj,
+                  defaults:obj
+                })
                 commentCraw.queue({
                   uri: `https://www.yelp.com${business.url}/review_feed?start=0&sort_by=date_desc`
                 });
