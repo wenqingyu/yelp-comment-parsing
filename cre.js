@@ -38,8 +38,8 @@ let preRequest = async function(options, done) {
 }
 
 var businessCraw = new Crawler({
-    maxConnections: 10,
-    rateLimit: 10,
+    maxConnections: 100,
+    rateLimit: 5,
     preRequest: async function(options, done) {
       preRequest(options,done)
     },
@@ -116,8 +116,8 @@ var businessCraw = new Crawler({
 });
 
 var commentCraw = new Crawler({
-    maxConnections: 10,
-    rateLimit: 10,
+    maxConnections: 100,
+    rateLimit: 5,
     preRequest: async function(options, done) {
       preRequest(options,done)
     },
