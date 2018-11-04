@@ -89,6 +89,7 @@ var businessCraw = new Crawler({
                   where:obj,
                   defaults:obj
                 })
+                console.log('进入：'+ `https://www.yelp.com${business.url}/review_feed?start=0&sort_by=date_desc`)
                 commentCraw.queue({
                   uri: `https://www.yelp.com${business.url}/review_feed?start=0&sort_by=date_desc`
                 });
@@ -113,6 +114,7 @@ var commentCraw = new Crawler({
           console.log(error)
         }else{
           try{
+            console.log('进入：'+ res.options.uri)
             let page =parseInt(/start=(\d*)/.exec(res.options.uri)[1]) / 20
             if(page<130){
               let url  = res.options.uri.replace(/start=\d*/,'start='+((page+1)*20))
