@@ -112,7 +112,7 @@ var businessCraw = new Crawler({
                 businessCraw.queue({
                   uri : res.options.uri
                 });
-              }esle{
+              }else{
                 done()
               }
             }
@@ -169,7 +169,7 @@ var commentCraw = new Crawler({
               commentCraw.queue({
                 uri : res.options.uri
               });
-            }esle{
+            }else{
                done()
             }
           }
