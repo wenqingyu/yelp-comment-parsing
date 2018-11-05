@@ -96,14 +96,14 @@ var businessCraw = new Crawler({
                 });
               }
 
-              global.sequelize.query(`
-                REPLACE INTO 
+              // global.sequelize.query(`
+              //   REPLACE INTO 
 
-                business(url,Rest_Name,Rest_Rate,Rest_total_Reviews,Rest_location,city) 
+              //   business(url,Rest_Name,Rest_Rate,Rest_total_Reviews,Rest_location,city) 
                 
-                VALUES
-                ${businessQues.join(',')}
-              `)
+              //   VALUES
+              //   ${businessQues.join(',')}
+              // `)
             }catch(err){
               console.log(err)
             }
