@@ -3,6 +3,7 @@ let xlsxHandler = require('./utils/xlsxHandler')
 const Regex = require('regexper.js');
 const db = require('./utils/db')
 const mysql = require('./utils/mysql')
+const moment = require('moment')
 const _ = require('lodash')
 let webHandler = require('./utils/webHandler')
 
@@ -61,6 +62,7 @@ var commentCraw = new Crawler({
             let regex = new Regex(/dropdown_user-name[^>]+?>([^<]+)[\s\S]+?([\d\.]+)\s*star rating[\s\S]+?rating-qualifier\S+\s*([\d\/]+)[\s\S]+?<p[^>]+>([\s\S]+?<\/p>)/,'ig'); 
             let matches = regex.matches(unescape(businessInfoResult.review_list))
             let commentInfos = []
+            let commentQues = []
             for(let match of matches){
               if(new Date(match.groups[3])>new Date('10/1/2017')){
                 let obj = {
@@ -70,11 +72,18 @@ var commentCraw = new Crawler({
                   Review : match.groups[4],
                   url : /www.yelp.com([\s\S]+?)\/review_feed/.exec(res.options.uri)[1]
                 }
-                await mysql.Comment.findOrCreate({
-                  where: obj,
-                  defaults: obj
-                })
+                commentQues.push(`('${obj.Cus_Name}','${obj.Cus_Review_Rate}','${moment(obj.Cus_Review_Date).format('YYYY-MM-DD')}','${obj.Review}','${obj.url}')`)
               }
+            }
+            if(commentQues.length>0){
+              global.sequelize.query(`
+                INSERT INTO 
+
+                comment(Cus_Name,Cus_Review_Rate,Cus_Review_Date,Review,url) 
+                
+                VALUES
+                ${commentQues.join(',')}
+              `)
             }
           }catch(err){
             if(err.toString().indexOf('TimeoutError')>=0){
