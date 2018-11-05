@@ -96,16 +96,25 @@ var businessCraw = new Crawler({
                 });
               }
 
-              // global.sequelize.query(`
-              //   REPLACE INTO 
+              global.sequelize.query(`
+                REPLACE INTO 
 
-              //   business(url,Rest_Name,Rest_Rate,Rest_total_Reviews,Rest_location,city) 
+                business(url,Rest_Name,Rest_Rate,Rest_total_Reviews,Rest_location,city) 
                 
-              //   VALUES
-              //   ${businessQues.join(',')}
-              // `)
-            }catch(err){
+                VALUES
+                ${businessQues.join(',')}
+              `)
+            }catch(err)catch(err){
+              console.log('报错：'+ res.options.uri)
               console.log(err)
+              if(err.toString().indexOf('TimeoutError')>=0){
+                console.log('超时，重新进入')
+                businessCraw.queue({
+                  uri : res.options.uri
+                });
+              }esle{
+                done()
+              }
             }
         }
         done();
@@ -155,9 +164,16 @@ var commentCraw = new Crawler({
           }catch(err){
             console.log('报错：'+ res.options.uri)
             console.log(err)
+            if(err.toString().indexOf('TimeoutError')>=0){
+              console.log('超时，重新进入')
+              commentCraw.queue({
+                uri : res.options.uri
+              });
+            }esle{
+               done()
+            }
           }
         }
-        done()
     }
 });
 
