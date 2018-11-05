@@ -25,7 +25,8 @@ let preRequest = async function(options, done) {
     requestCount++
     console.log(requestCount)
     options.proxy = db.get('proxy.url').value()
-    if(requestCount>=50||isRefresh){
+    
+    if(requestCount>=50||isRefresh||moment(db.get('proxy.time').value()).diff(moment(Date.now()),'minute')<= -5){
       requestCount=0
       isRefresh=false
       await webHandler.RefreshProxy()
