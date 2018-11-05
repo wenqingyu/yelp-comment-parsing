@@ -104,7 +104,7 @@ var businessCraw = new Crawler({
                 VALUES
                 ${businessQues.join(',')}
               `)
-            }catch(err)catch(err){
+            }catch(err){
               console.log('报错：'+ res.options.uri)
               console.log(err)
               if(err.toString().indexOf('TimeoutError')>=0){
