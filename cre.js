@@ -105,16 +105,7 @@ var businessCraw = new Crawler({
                 ${businessQues.join(',')}
               `)
             }catch(err){
-              console.log('报错：'+ res.options.uri)
               console.log(err)
-              if(err.toString().indexOf('TimeoutError')>=0){
-                console.log('超时，重新进入')
-                businessCraw.queue({
-                  uri : res.options.uri
-                });
-              }else{
-                done()
-              }
             }
         }
         done();
@@ -164,16 +155,9 @@ var commentCraw = new Crawler({
           }catch(err){
             console.log('报错：'+ res.options.uri)
             console.log(err)
-            if(err.toString().indexOf('TimeoutError')>=0){
-              console.log('超时，重新进入')
-              commentCraw.queue({
-                uri : res.options.uri
-              });
-            }else{
-               done()
-            }
           }
         }
+        done()
     }
 });
 
