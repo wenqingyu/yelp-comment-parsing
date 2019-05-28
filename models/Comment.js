@@ -17,13 +17,13 @@ const Comment = sequelize.define('comment', {
     type: Sequelize.DATE
   },
   Review: {
-    type: Sequelize.STRING
+    type: Sequelize.TEXT
   },
   url: {
     type: Sequelize.STRING
   }
 }, {
-  freezeTableName: true,
+  freezeTableName: true
 })
 
 module.exports = Comment

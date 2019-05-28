@@ -7,38 +7,23 @@ let webHandler = require('./utils/webHandler')
 
 let requestCount = 0
 
-let citys = [
-  'Chicago',
-  'Las Vegas',
-  'Los Angeles',
-  'New York',
-  'Orlando'
-]
-
 let preRequest = async function (options, done) {
-  try {
-    requestCount++
-    console.log(requestCount)
-    options.proxy = db.get('proxy.url').value()
-
-    if (requestCount >= 100 || moment(db.get('proxy.time').value()).diff(moment(Date.now()), 'minute') <= -5) {
-      requestCount = 0
-      await webHandler.RefreshProxy()
-    }
-  } catch (err) {
-    console.log(err)
+  options.retryTimeout = 5000
+  requestCount++
+  if (requestCount >= 50) {
+    requestCount = 0
+    await webHandler.RefreshProxy()
   }
 
   done()
 }
 
 var commentCraw = new Crawler({
-  maxConnections: 100,
+  maxConnections: 50,
   preRequest: async function (options, done) {
     preRequest(options, done)
   },
   callback: async function (error, res, done) {
-    requestCount++
     if (error) {
       console.log(error)
     } else {
@@ -46,7 +31,6 @@ var commentCraw = new Crawler({
         let page = parseInt(/start=(\d*)/.exec(res.options.uri)[1]) / 20
         if (page < 130) {
           let url = res.options.uri.replace(/start=\d*/, 'start=' + ((page + 1) * 20))
-          console.log('comment自进入：' + url)
           commentCraw.queue({
             uri: url
           })
@@ -101,6 +85,7 @@ async function begin () {
   })
   for (let b of business) {
     commentCraw.queue({
+      proxy: db.get('proxy.url').value(),
       uri: `https://www.yelp.com${b.url}/review_feed?start=0&sort_by=date_desc`
     })
   }

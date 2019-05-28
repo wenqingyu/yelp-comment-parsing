@@ -35,7 +35,6 @@ var businessCraw = new Crawler({
     } else {
       try {
         console.log('进入：' + res.options.uri)
-        JSON.parse(res.body)
         let businessResult = JSON.parse(res.body)
         let bs = []
         if (businessResult.searchPageProps) {
