@@ -39,25 +39,29 @@ var commentCraw = new Crawler({
         let businessInfoResult = JSON.parse(res.body)
         console.log('得到商铺详情，开始匹配评论')
         let regex = new Regex(/dropdown_user-name[^>]+?>([^<]+)[\s\S]+?([\d\.]+)\s*star rating[\s\S]+?rating-qualifier\S+\s*([\d\/]+)[\s\S]+?<p[^>]+>([\s\S]+?<\/p>)/, 'ig')
-        let matches = regex.matches(unescape(businessInfoResult.review_list))
+        let html = unescape(businessInfoResult.review_list)
+        let matches = regex.matches(html)
         let commentQues = []
         for (let match of matches) {
-          if (new Date(match.groups[3]) > new Date('10/1/2017')) {
+          if (new Date(match.groups[3]) > new Date('1/6/2018')) {
             let obj = {
               Cus_Name: match.groups[1],
               Cus_Review_Rate: match.groups[2],
               Cus_Review_Date: new Date(match.groups[3]),
               Review: match.groups[4],
-              url: /www.yelp.com([\s\S]+?)\/review_feed/.exec(res.options.uri)[1]
+              url: /www.yelp.com([\s\S]+?)\/review_feed/.exec(res.options.uri)[1],
+              Helpful_Vote: /Useful<[\s\S]+?count">(\d*)/.exec(html)[1] || 0,
+              Funny_Vote: /Funny<[\s\S]+?count">(\d*)/.exec(html)[1] || 0,
+              Cool_Vote: /Cool<[\s\S]+?count">(\d*)/.exec(html)[1] || 0
             }
-            commentQues.push(`('${obj.Cus_Name}','${obj.Cus_Review_Rate}','${moment(obj.Cus_Review_Date).format('YYYY-MM-DD')}','${obj.Review}','${obj.url}')`)
+            commentQues.push(`(${res.options.businessId},'${obj.Cus_Name}','${obj.Cus_Review_Rate}','${moment(obj.Cus_Review_Date).format('YYYY-MM-DD')}','${obj.Review}','${obj.url}',${obj.Helpful_Vote},${obj.Funny_Vote},${obj.Cool_Vote})`)
           }
         }
         if (commentQues.length > 0) {
           global.sequelize.query(`
                 INSERT INTO 
 
-                comment(Cus_Name,Cus_Review_Rate,Cus_Review_Date,Review,url) 
+                comment(Business_Id,Cus_Name,Cus_Review_Rate,Cus_Review_Date,Review,url,Helpful_Vote,Funny_Vote,Cool_Vote) 
                 
                 VALUES
                 ${commentQues.join(',')}
@@ -81,12 +85,14 @@ var commentCraw = new Crawler({
 async function begin () {
   await webHandler.RefreshProxy()
   let business = await mysql.Business.findAll({
-    attributes: ['url']
+    attributes: ['id', 'url'],
+    order: [['id', 'ASC']]
   })
   for (let b of business) {
     commentCraw.queue({
       proxy: db.get('proxy.url').value(),
-      uri: `https://www.yelp.com${b.url}/review_feed?start=0&sort_by=date_desc`
+      uri: `https://www.yelp.com${b.url}/review_feed?start=0&sort_by=date_desc`,
+      businessId: b.id
     })
   }
 }

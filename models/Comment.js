@@ -7,6 +7,9 @@ const Comment = sequelize.define('comment', {
     primaryKey: true,
     autoIncrement: true
   },
+  Business_Id: {
+    type: Sequelize.INTEGER
+  },
   Cus_Name: {
     type: Sequelize.STRING
   },
@@ -21,6 +24,18 @@ const Comment = sequelize.define('comment', {
   },
   url: {
     type: Sequelize.STRING
+  },
+  Helpful_Vote: {
+    type: Sequelize.INTEGER,
+    default: 0
+  },
+  Funny_Vote: {
+    type: Sequelize.INTEGER,
+    default: 0
+  },
+  Cool_Vote: {
+    type: Sequelize.INTEGER,
+    default: 0
   }
 }, {
   freezeTableName: true
