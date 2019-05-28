@@ -66,17 +66,12 @@ function getFunc (url, query, cookie, isJson = true, proxy) {
       proxyOption = proxy
     }
 
-    let t = setTimeout(() => {
-      reject('timeout')
-    }, 10000)
-
     request.get({
       url,
       proxy: proxyOption
     },
     function (error, response, body) {
       try {
-        clearTimeout(t)
         if (error) {
           reject(error)
           return
@@ -105,24 +100,24 @@ function getFunc (url, query, cookie, isJson = true, proxy) {
 }
 
 webHandler.Get = async (url, query, cookie, isJson = true, proxy) => {
-  let proxyHost = proxy
-  if (proxy) {
-    proxyHost = await db.get('proxy').value()
-    if (!proxyHost || (proxyHost && moment(proxyHost.time).diff(moment(Date.now()), 'minute') <= -4)) {
-      let ipGet = requestSync('GET', `http://www.xiongmaodaili.com/xiongmao-web/api/glip?secret=${config.get('proxy.secret')}&orderNo=${config.get('proxy.orderId')}&count=1&isTxt=0&proxyType=1`)
-      let ip = JSON.parse(ipGet.getBody().toString())
-      proxyHost = `http://${ip.obj[0].ip}:${ip.obj[0].port}`
-      await db.set('proxy', {
-        url: proxyHost,
-        time: Date.now()
-      }).write()
-    } else {
-      proxyHost = proxyHost.url
-    }
-  }
+  // let proxyHost = proxy
+  // if (proxy) {
+  //   proxyHost = await db.get('proxy').value()
+  //   if (!proxyHost || (proxyHost && moment(proxyHost.time).diff(moment(Date.now()), 'minute') <= -4)) {
+  //     let ipGet = requestSync('GET', `http://www.xiongmaodaili.com/xiongmao-web/api/glip?secret=${config.get('proxy.secret')}&orderNo=${config.get('proxy.orderId')}&count=1&isTxt=0&proxyType=1`)
+  //     let ip = JSON.parse(ipGet.getBody().toString())
+  //     proxyHost = `http://${ip.obj[0].ip}:${ip.obj[0].port}`
+  //     await db.set('proxy', {
+  //       url: proxyHost,
+  //       time: Date.now()
+  //     }).write()
+  //   } else {
+  //     proxyHost = proxyHost.url
+  //   }
+  // }
   let result = {}
 
-  result = await getFunc(url, query, cookie, isJson = true, proxy ? proxyHost : proxy)
+  result = await getFunc(url, query, cookie, isJson = true)
   return result
 }
 

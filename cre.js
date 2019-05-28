@@ -1,16 +1,11 @@
 var Crawler = require('crawler')
-let xlsxHandler = require('./utils/xlsxHandler')
 const Regex = require('regexper.js')
 const db = require('./utils/db')
 const mysql = require('./utils/mysql')
 const moment = require('moment')
-const _ = require('lodash')
 let webHandler = require('./utils/webHandler')
 
-let proxy = ''
-
 let requestCount = 0
-let isRefresh = false
 
 let citys = [
   'Chicago',
@@ -26,9 +21,8 @@ let preRequest = async function (options, done) {
     console.log(requestCount)
     options.proxy = db.get('proxy.url').value()
 
-    if (requestCount >= 100 || isRefresh || moment(db.get('proxy.time').value()).diff(moment(Date.now()), 'minute') <= -5) {
+    if (requestCount >= 100 || moment(db.get('proxy.time').value()).diff(moment(Date.now()), 'minute') <= -5) {
       requestCount = 0
-      isRefresh = false
       await webHandler.RefreshProxy()
     }
   } catch (err) {
@@ -62,7 +56,6 @@ var commentCraw = new Crawler({
         console.log('得到商铺详情，开始匹配评论')
         let regex = new Regex(/dropdown_user-name[^>]+?>([^<]+)[\s\S]+?([\d\.]+)\s*star rating[\s\S]+?rating-qualifier\S+\s*([\d\/]+)[\s\S]+?<p[^>]+>([\s\S]+?<\/p>)/, 'ig')
         let matches = regex.matches(unescape(businessInfoResult.review_list))
-        let commentInfos = []
         let commentQues = []
         for (let match of matches) {
           if (new Date(match.groups[3]) > new Date('10/1/2017')) {
@@ -103,8 +96,6 @@ var commentCraw = new Crawler({
 
 async function begin () {
   await webHandler.RefreshProxy()
-  requestCount = 0
-  proxy = db.get('proxy.url').value()
   let business = await mysql.Business.findAll({
     attributes: ['url']
   })

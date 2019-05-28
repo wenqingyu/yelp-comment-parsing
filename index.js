@@ -4,10 +4,7 @@ const db = require('./utils/db')
 const mysql = require('./utils/mysql')
 let webHandler = require('./utils/webHandler')
 
-let proxy = ''
-
 let requestCount = 0
-let isRefresh = false
 
 let citys = [
   'Chicago',
@@ -22,9 +19,8 @@ let preRequest = async function (options, done) {
     requestCount++
     console.log(requestCount)
     options.proxy = db.get('proxy.url').value()
-    if (requestCount >= 50 || isRefresh) {
+    if (requestCount >= 50) {
       requestCount = 0
-      isRefresh = false
       await webHandler.RefreshProxy()
     }
   } catch (err) {
@@ -151,8 +147,6 @@ var commentCraw = new Crawler({
 
 async function begin () {
   await webHandler.RefreshProxy()
-  requestCount = 0
-  proxy = db.get('proxy.url').value()
   for (let city of citys) {
     for (let i = 0; i <= 100; i++) {
       businessCraw.queue({
