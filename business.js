@@ -15,6 +15,7 @@ let citys = [
 
 let preRequest = async function (options, done) {
   options.retryTimeout = 5000
+  options.proxy = db.get('proxy.url').value()
   requestCount++
   if (requestCount >= 50) {
     requestCount = 0
@@ -92,7 +93,6 @@ async function begin () {
   for (let city of citys) {
     for (let i = 0; i <= 99; i++) {
       businessCraw.queue({
-        proxy: db.get('proxy.url').value(),
         uri: `https://www.yelp.com/search/snippet?find_desc=&find_loc=${city}&start=${i * 10}`
       })
     }

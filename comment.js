@@ -8,6 +8,7 @@ let webHandler = require('./utils/webHandler')
 let requestCount = 0
 
 let preRequest = async function (options, done) {
+  options.proxy = db.get('proxy.url').value()
   options.retryTimeout = 5000
   requestCount++
   if (requestCount >= 50) {
@@ -90,7 +91,6 @@ async function begin () {
   })
   for (let b of business) {
     commentCraw.queue({
-      proxy: db.get('proxy.url').value(),
       uri: `https://www.yelp.com${b.url}/review_feed?start=0&sort_by=date_desc`,
       businessId: b.id
     })
