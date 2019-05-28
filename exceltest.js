@@ -1,6 +1,6 @@
 const xlsxHandler = require('./utils/xlsxHandler')
 
-async function work() {
+async function work () {
   await xlsxHandler.insertRows([
     [
       '1',
@@ -10,7 +10,7 @@ async function work() {
       '3',
       '4'
     ]
-  ],'./excels/'+'Chicago.xlsx' , 'Chicago' , ["name"])
+  ], './excels/' + 'Chicago.xlsx', 'Chicago', ['name'])
 }
 
 work()

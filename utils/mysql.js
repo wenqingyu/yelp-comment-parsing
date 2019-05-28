@@ -13,7 +13,7 @@ var sequelize = new Sequelize(config.get('db.database'), config.get('db.options.
   define: {
     timestamps: false
   },
-  query: {raw: true},
+  query: { raw: true },
   pool: {
     max: 5,
     min: 0,
