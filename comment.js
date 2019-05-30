@@ -11,7 +11,7 @@ let preRequest = async function (options, done) {
   options.proxy = db.get('proxy.url').value()
   options.retryTimeout = 5000
   requestCount++
-  if (requestCount >= 50) {
+  if (requestCount >= 50 || moment(db.get('proxy.time').value()).diff(moment(Date.now()), 'minute') <= -2) {
     requestCount = 0
     await webHandler.RefreshProxy()
   }
@@ -33,7 +33,8 @@ var commentCraw = new Crawler({
         if (page < 130) {
           let url = res.options.uri.replace(/start=\d*/, 'start=' + ((page + 1) * 20))
           commentCraw.queue({
-            uri: url
+            uri: url,
+            businessId: res.options.businessId
           })
         }
         JSON.parse(res.body)
@@ -51,9 +52,9 @@ var commentCraw = new Crawler({
               Cus_Review_Date: new Date(match.groups[3]),
               Review: match.groups[4],
               url: /www.yelp.com([\s\S]+?)\/review_feed/.exec(res.options.uri)[1],
-              Helpful_Vote: /Useful<[\s\S]+?count">(\d*)/.exec(html)[1] || 0,
-              Funny_Vote: /Funny<[\s\S]+?count">(\d*)/.exec(html)[1] || 0,
-              Cool_Vote: /Cool<[\s\S]+?count">(\d*)/.exec(html)[1] || 0
+              Helpful_Vote: new Regex(`${match.groups[1]}[\\s\\S]+?Useful<[\\s\\S]+?count">(\\d*)`).match(html).groups[1] || 0,
+              Funny_Vote: new Regex(`${match.groups[1]}[\\s\\S]+?Funny<[\\s\\S]+?count">(\\d*)`).match(html).groups[1] || 0,
+              Cool_Vote: new Regex(`${match.groups[1]}[\\s\\S]+?Cool<[\\s\\S]+?count">(\\d*)`).match(html).groups[1] || 0
             }
             commentQues.push(`(${res.options.businessId},'${obj.Cus_Name}','${obj.Cus_Review_Rate}','${moment(obj.Cus_Review_Date).format('YYYY-MM-DD')}','${obj.Review}','${obj.url}',${obj.Helpful_Vote},${obj.Funny_Vote},${obj.Cool_Vote})`)
           }
