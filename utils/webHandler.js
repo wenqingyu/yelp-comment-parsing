@@ -2,10 +2,7 @@ const request = require('request')
 const requestSync = require('sync-request')
 const md5 = require('md5')
 const config = require('config')
-const low = require('lowdb');
-const FileSync = require('lowdb/adapters/FileSync');  // 有多种适配器可选择
-const adapter = new FileSync('db.json'); // 申明一个适配器
-const db = low(adapter);
+const db = require('./db')
 const moment = require('moment')
 
 let webHandler = {
@@ -57,7 +54,7 @@ webHandler.Post = (url, form, headers, isJson = true, cookie, isRespone = false)
   })
 }
 
-function getFunc(url, query, cookie, isJson = true , proxy){
+function getFunc (url, query, cookie, isJson = true, proxy) {
   return new Promise(async (resolve, reject) => {
     if (query) {
       url += `?query=${UrlEncode(query)}`
@@ -65,13 +62,13 @@ function getFunc(url, query, cookie, isJson = true , proxy){
 
     let proxyOption = null
 
-    if(proxy){
+    if (proxy) {
       proxyOption = proxy
     }
 
     request.get({
       url,
-      proxy : proxyOption
+      proxy: proxyOption
     },
     function (error, response, body) {
       try {
@@ -85,12 +82,11 @@ function getFunc(url, query, cookie, isJson = true , proxy){
         }
 
         if (!error) {
-          if(isJson){
+          if (isJson) {
             resolve(JSON.parse(body))
-          }else{
+          } else {
             resolve(body)
           }
-          
         } else {
           reject(body)
         }
@@ -103,26 +99,40 @@ function getFunc(url, query, cookie, isJson = true , proxy){
   })
 }
 
-webHandler.Get =async  (url, query, cookie, isJson = true , proxy) => {
-  let proxyHost = proxy
-  if(proxy){
-    proxyHost = await db.get('proxy').value()
-    if(!proxyHost || (proxyHost && moment(proxyHost.time).diff(moment(Date.now()),'minute')<= -5)){
-      let ipGet = requestSync('GET',`http://www.xiongmaodaili.com/xiongmao-web/api/glip?secret=${config.get('proxy.secret')}&orderNo=${config.get('proxy.orderId')}&count=1&isTxt=0&proxyType=1`)
-      let ip = JSON.parse(ipGet.getBody().toString()) 
-      proxyHost = `http://${ip.obj[0].ip}:${ip.obj[0].port}`
-      await db.set('proxy',{
-        url : proxyHost,
-        time : Date.now()
-      }).write()
-    }else{
-      proxyHost = proxyHost.url
-    }
-  }
+webHandler.Get = async (url, query, cookie, isJson = true, proxy) => {
+  // let proxyHost = proxy
+  // if (proxy) {
+  //   proxyHost = await db.get('proxy').value()
+  //   if (!proxyHost || (proxyHost && moment(proxyHost.time).diff(moment(Date.now()), 'minute') <= -4)) {
+  //     let ipGet = requestSync('GET', `http://www.xiongmaodaili.com/xiongmao-web/api/glip?secret=${config.get('proxy.secret')}&orderNo=${config.get('proxy.orderId')}&count=1&isTxt=0&proxyType=1`)
+  //     let ip = JSON.parse(ipGet.getBody().toString())
+  //     proxyHost = `http://${ip.obj[0].ip}:${ip.obj[0].port}`
+  //     await db.set('proxy', {
+  //       url: proxyHost,
+  //       time: Date.now()
+  //     }).write()
+  //   } else {
+  //     proxyHost = proxyHost.url
+  //   }
+  // }
   let result = {}
-  
-  result = await getFunc(url, query, cookie, isJson = true , proxy?proxyHost:proxy)
+
+  result = await getFunc(url, query, cookie, isJson = true)
   return result
+}
+
+webHandler.RefreshProxy = async () => {
+  try {
+    let ipGet = requestSync('GET', `http://www.xiongmaodaili.com/xiongmao-web/api/glip?secret=${config.get('proxy.secret')}&orderNo=${config.get('proxy.orderId')}&count=1&isTxt=0&proxyType=1`)
+    let ip = JSON.parse(ipGet.getBody().toString())
+    let proxyHost = `http://${ip.obj[0].ip}:${ip.obj[0].port}`
+    await db.set('proxy', {
+      url: proxyHost,
+      time: Date.now()
+    }).write()
+  } catch (err) {
+    // console.log('')
+  }
 }
 
 webHandler.Delete = (url, form, cookie) => {

@@ -10,14 +10,19 @@
   "license": "ISC",
   "dependencies": {
     "config": "^2.0.1",
+    "crawler": "^1.2.0",
     "exceljs": "^1.6.2",
+    "https-proxy-agent": "^2.2.1",
     "lowdb": "^1.0.0",
     "md5": "^2.2.1",
     "moment": "^2.22.2",
+    "mysql": "^2.16.0",
+    "mysql2": "^1.6.1",
     "node-xlsx": "^0.12.1",
     "nodegrass": "0.0.3",
     "regexper.js": "^1.0.7",
     "request": "^2.88.0",
+    "sequelize": "^4.41.0",
     "sync-request": "^6.0.0"
   }
 }
